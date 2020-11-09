@@ -12,14 +12,17 @@ import constants from '../constants';
 import { withLocation } from '@mapbox/batfish/modules/with-location';
 // dataSelectors
 import navigation from '@mapbox/batfish/data/navigation';
-import topics from '@mapbox/batfish/data/topics';
+import filters from '@mapbox/batfish/data/filters';
 import mbxMeta from '@mapbox/batfish/data/mbx-meta';
+import apiNavigation from '@mapbox/batfish/data/api-navigation';
 
-import ApiSidebar from './api/sidebar.js';
-import StyleSpecSidebar from './style-spec/sidebar.js';
+import { styleSpecNavigation } from '../data/style-spec-navigation';
+
+import Search from './api/search';
 import AppropriateImage from './appropriate-image';
 import redirectApiRef from '../util/api-ref-redirect';
 import classnames from 'classnames';
+import { version } from '../../mapbox-gl-js/package.json';
 
 const redirectStyleSpec = require('../util/style-spec-redirect');
 
@@ -43,36 +46,42 @@ class PageShell extends React.Component {
                 window.location = redirectApiRef(this.props.location);
         }
     }
-    renderCustomSideBar = () => {
-        const { location, frontMatter, headings } = this.props;
+    renderCustomHeadings = () => {
+        const { location, frontMatter } = this.props;
+
+        const subSection = findParentPath(navigation, location.pathname);
+        if (subSection === '/mapbox-gl-js/api/')
+            return (
+                frontMatter.headings ||
+                apiNavigation.filter((f) => f.path === location.pathname)[0]
+                    .subnav
+            );
+        else if (subSection === '/mapbox-gl-js/style-spec') {
+            return (
+                frontMatter.headings ||
+                styleSpecNavigation.filter(
+                    (f) => f.path === location.pathname
+                )[0].subnav
+            );
+        } else return undefined;
+    };
+    renderCustomAside = () => {
         const subSection = findParentPath(
             navigation,
             this.props.location.pathname
         );
-        if (subSection === '/mapbox-gl-js/api/')
-            return (
-                <ApiSidebar
-                    frontMatter={frontMatter}
-                    location={location}
-                    headings={frontMatter.headings || headings}
-                />
-            );
-        else if (subSection === '/mapbox-gl-js/style-spec/')
-            return (
-                <StyleSpecSidebar
-                    frontMatter={frontMatter}
-                    location={location}
-                />
-            );
+        if (subSection === '/mapbox-gl-js/api/') return <Search />;
         else return undefined;
     };
     render() {
         const { location, children, frontMatter } = this.props;
         const meta = buildMeta(frontMatter, location.pathname, navigation);
         const isStyleSpec = location.pathname.indexOf('/style-spec/') > -1;
-        const site = isStyleSpec
+        const site =
+            /*isStyleSpec
             ? 'Style Specification' // set site name to Style spec
-            : constants.SITE;
+            : */ constants.SITE;
+
         return (
             <ReactPageShell
                 site={site}
@@ -89,20 +98,23 @@ class PageShell extends React.Component {
                         location={location}
                         frontMatter={{
                             ...frontMatter,
-                            // set defaults for "example" pages
-                            ...(frontMatter.layout === 'example' && {
-                                includeFilterBar: true
+                            ...(frontMatter.overviewHeader && {
+                                overviewHeader: {
+                                    ...frontMatter.overviewHeader,
+                                    version: version
+                                }
                             })
                         }}
+                        headings={this.renderCustomHeadings()}
                         constants={{
                             ...constants,
                             SITE: site // override site name
                         }}
                         navigation={navigation}
-                        topics={topics}
+                        filters={filters}
                         AppropriateImage={AppropriateImage}
                         // use custom sidebar for API and Style Spec since this data needs to be generated
-                        customSidebar={this.renderCustomSideBar()}
+                        customAside={this.renderCustomAside()}
                     >
                         <div
                             className={classnames('', {

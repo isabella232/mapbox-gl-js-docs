@@ -8,10 +8,8 @@ const {
 } = require('@mapbox/remark-lint-mapbox/frontmatter/mbx-tagger-batfish');
 const {
     buildNavigation,
-    buildTopics
+    buildFilters
 } = require('@mapbox/dr-ui/helpers/batfish/index.js');
-const pluginTopics = require('./docs/data/build-plugin-topics');
-const topicsOrder = require('./docs/data/topics.json');
 
 const siteBasePath = '/mapbox-gl-js';
 module.exports = () => {
@@ -59,7 +57,6 @@ module.exports = () => {
                 require('rehype-slug'),
                 require('@mapbox/rehype-prism'),
                 require('@mapbox/dr-ui/plugins/add-links-to-headings'),
-                require('@mapbox/dr-ui/plugins/create-sections'),
                 require('@mapbox/dr-ui/plugins/make-table-scroll')
             ]
         },
@@ -69,16 +66,7 @@ module.exports = () => {
             apiSearch: () => buildApiSearch(),
             apiNavigation: () => apiNavigation,
             navigation: (data) => buildNavigation(siteBasePath, data),
-            topics: (data) =>
-                buildTopics(
-                    data,
-                    {
-                        // append plugin topics
-                        '/mapbox-gl-js/plugins/': { topics: pluginTopics }
-                    },
-                    // order of topics on examples page
-                    topicsOrder
-                )
+            filters: (data) => buildFilters(data)
         },
         devBrowserslist: false,
         babelInclude: [

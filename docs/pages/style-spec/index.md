@@ -4,7 +4,7 @@ description: 'This specification defines and describes the visual appearance of 
 contentType: specification
 navOrder: 4
 order: 1
-layout: accordion
+layout: page
 products:
 - Mapbox Style Specification
 ---
