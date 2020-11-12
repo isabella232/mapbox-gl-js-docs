@@ -8,6 +8,8 @@ language:
 - JavaScript
 hideCardLanguage: true # hides the language from card (repetitive)
 hideCardDescription: true # hides the card description
+showFilters:
+- topics
 products:
 - Mapbox GL JS
 ---

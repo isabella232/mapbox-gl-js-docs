@@ -24,6 +24,12 @@ import redirectApiRef from '../util/api-ref-redirect';
 import classnames from 'classnames';
 import { version } from '../../mapbox-gl-js/package.json';
 
+import { devDependencies } from '../../package.json';
+
+const styleSpecVersion = devDependencies[
+    '@mapbox/mapbox-gl-style-spec'
+].replace('^', '');
+
 const redirectStyleSpec = require('../util/style-spec-redirect');
 
 class PageShell extends React.Component {
@@ -77,15 +83,11 @@ class PageShell extends React.Component {
         const { location, children, frontMatter } = this.props;
         const meta = buildMeta(frontMatter, location.pathname, navigation);
         const isStyleSpec = location.pathname.indexOf('/style-spec/') > -1;
-        const site =
-            /*isStyleSpec
-            ? 'Style Specification' // set site name to Style spec
-            : */ constants.SITE;
 
         return (
             <ReactPageShell
-                site={site}
-                subsite={meta.subsite || undefined}
+                site={constants.SITE}
+                subsite={isStyleSpec ? 'Style Specification' : undefined}
                 {...this.props}
                 meta={meta}
                 darkHeaderText={true}
@@ -101,15 +103,14 @@ class PageShell extends React.Component {
                             ...(frontMatter.overviewHeader && {
                                 overviewHeader: {
                                     ...frontMatter.overviewHeader,
-                                    version: version
+                                    version: isStyleSpec
+                                        ? styleSpecVersion
+                                        : version
                                 }
                             })
                         }}
                         headings={this.renderCustomHeadings()}
-                        constants={{
-                            ...constants,
-                            SITE: site // override site name
-                        }}
+                        constants={constants}
                         navigation={navigation}
                         filters={filters}
                         AppropriateImage={AppropriateImage}
