@@ -5,7 +5,7 @@ topics:
   - Camera
   - Layers
   - Sources
-thumbnail: simple-map
+thumbnail: free-camera
 contentType: example
 layout: example
 language:
