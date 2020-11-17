@@ -2,8 +2,7 @@
 title: Add 3D terrain to a map
 description: Add 3D terrain to a map
 topics:
-  - Layers
-  - Sources
+  - GL JS v2 preview
 thumbnail: terrain
 contentType: example
 layout: example
