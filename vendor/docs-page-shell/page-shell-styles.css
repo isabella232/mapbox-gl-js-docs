@@ -454,6 +454,9 @@
     font-size: 12px !important;
     line-height: 18px;
   }
+  .shell-wrapper .shell-ml3-mm {
+    margin-left: 3px !important;
+  }
 }
 @media screen and (min-width: 800px) {
   .shell-wrapper .shell-mt42-ml {

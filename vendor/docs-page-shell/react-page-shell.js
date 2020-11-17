@@ -271,11 +271,13 @@ var nav = [
 		href: "https://docs.mapbox.com/help/"
 	}
 ];
+var search = true;
 var navigationMenuData = {
 	language: language,
 	logoSiteTitle: logoSiteTitle,
 	all: all,
-	nav: nav
+	nav: nav,
+	search: search
 };
 
 var ORIGIN_DOCS_PRODUCTION = 'https://docs.mapbox.com';
@@ -287,7 +289,7 @@ var MOBILE_HEADER_HEIGHT = 72;
 function Search(props) {
   var darkText = props.darkText;
   return React.createElement("div", {
-    className: "shell-flex-child shell-ml6 shell-ml9-ml shell-ml18-mxl",
+    className: "shell-flex-child shell-ml3-mm shell-ml12-ml",
     style: {
       lineHeight: 1
     }
@@ -462,7 +464,7 @@ function PageHeader(props) {
       href: nav$$1.href,
       darkText: props.darkText
     }, nav$$1.title);
-  }), React.createElement(Search, {
+  }), navigationMenuData.search && React.createElement(Search, {
     darkText: props.darkText
   }))), React.createElement("div", {
     className: "shell-flex-child shell-ml6"
