@@ -71,7 +71,9 @@ class SingleSection extends React.Component {
         const child = this.props;
         return (
             <React.Fragment>
-                <Github section={child} />
+                <div className="mt30-mm mt-neg30-mxl">
+                    <Github section={child} />
+                </div>
                 <div className="mb18">
                     <ApiItemContents {...child} headingLevel={2} />
                 </div>
