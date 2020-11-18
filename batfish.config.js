@@ -65,7 +65,7 @@ module.exports = () => {
             mbxMeta: (data) => mbxTaggerBatfish(data),
             apiSearch: () => buildApiSearch(),
             apiNavigation: () => apiNavigation,
-            navigation: (data) => buildNavigation(siteBasePath, data),
+            navigation: (data) => buildNavigation({ siteBasePath, data }),
             filters: (data) => buildFilters(data)
         },
         devBrowserslist: false,

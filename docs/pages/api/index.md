@@ -4,7 +4,6 @@ description: The Mapbox GL JS API documentation to render interactive maps from 
 contentType: API
 navOrder: 2
 order: 1
-hideTitle: true # hide title because we are using OverviewHeader
 layout: page
 language:
 - JavaScript

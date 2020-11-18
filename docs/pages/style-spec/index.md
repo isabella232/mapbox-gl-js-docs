@@ -7,7 +7,6 @@ order: 1
 layout: page
 products:
 - Mapbox Style Specification
-hideTitle: true
 overviewHeader:
   title: Style Specification
   features: []
