@@ -14,7 +14,7 @@ overviewHeader:
   changelogLink: https://github.com/mapbox/mapbox-gl-js/blob/main/src/style-spec/CHANGELOG.md
 ---
 
-A Mapbox style is a document that defines the visual appearance of a map: what data to draw, the order to draw it in, and how to style the data when drawing it. A style document is a [JSON](http://www.json.org/) object with specific root level and nested properties. This specification defines and describes these properties.
+A Mapbox [style](https://docs.mapbox.com/help/glossary/style/) is a document that defines the visual appearance of a map: what data to draw, the order to draw it in, and how to style the data when drawing it. A style document is a [JSON](http://www.json.org/) object with specific root level and nested properties. This specification defines and describes these properties.
 
 The intended audience of this specification includes:
 
