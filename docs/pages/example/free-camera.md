@@ -1,6 +1,6 @@
 ---
-title: Animate free camera over 3D terrain
-description: Utilize the FreeCamera API to create a fly-over animation above 3D terrain
+title: Animate free camera around a point in 3D terrain
+description: Utilize the FreeCamera API to create a fly-over animation focused on a point in a 3D terrain
 topics:
   - GL JS v2 preview
 thumbnail: free-camera

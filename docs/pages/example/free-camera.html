@@ -14,7 +14,7 @@
 </div>
 
 <script>
-    var map = (window.map = new mapboxgl.Map({
+    var map = new mapboxgl.Map({
         container: 'map',
         zoom: 11.53,
         center: [138.7189, 35.1691],
@@ -23,12 +23,13 @@
         style: 'mapbox://styles/mapbox/satellite-v9',
         hash: true,
         interactive: false
-    }));
+    });
 
     var animationIndex = 0;
     var animationTime = 0.0;
 
-    map.on('style.load', function () {
+    // add terrain and sky layers once the style has loaded
+    map.on('load', function () {
         map.addSource('mapbox-dem', {
             'type': 'raster-dem',
             'url': 'mapbox://mapbox.terrain-rgb',
@@ -46,112 +47,113 @@
                 'sky-atmosphere-sun-intensity': 15
             }
         });
-        map.on('idle', function () {
-            // linearly interpolate between two altitudes/position based on time
-            var lerp = (a, b, t) => {
-                if (Array.isArray(a) && Array.isArray(b)) {
-                    var result = [];
-                    for (var i = 0; i < Math.min(a.length, b.length); i++)
-                        result[i] = a[i] * (1.0 - t) + b[i] * t;
-                    return result;
-                } else {
-                    return a * (1.0 - t) + b * t;
+    });
+
+    // wait for the terrain and sky to load before starting animations
+    map.on('idle', function () {
+        // linearly interpolate between two altitudes/position based on time
+        var lerp = (a, b, t) => {
+            if (Array.isArray(a) && Array.isArray(b)) {
+                var result = [];
+                for (var i = 0; i < Math.min(a.length, b.length); i++)
+                    result[i] = a[i] * (1.0 - t) + b[i] * t;
+                return result;
+            } else {
+                return a * (1.0 - t) + b * t;
+            }
+        };
+
+        // create easing function for the animation
+        var easeInOutQuad = (t) =>
+            t < 0.5 ? 2.0 * t * t : (4.0 - 2.0 * t) * t - 1.0;
+
+        var animations = [
+            {
+                duration: 500.0,
+                animate: (phase) => {
+                    var start = [138.73375, 35.41914];
+                    var end = [138.72649, 35.33974];
+                    var alt = [7000.0, 6000.0];
+                    var target = [138.73036, 35.36197];
+
+                    // interpolate camera position while keeping focus on the target lat/lng
+                    var camera = map.getFreeCameraOptions();
+
+                    var position = lerp(start, end, phase);
+                    var altitude = lerp(alt[0], alt[1], phase);
+                    camera.position = mapboxgl.MercatorCoordinate.fromLngLat(
+                        position,
+                        altitude
+                    );
+                    camera.lookAtPoint(target);
+
+                    map.setFreeCameraOptions(camera);
                 }
-            };
+            },
+            {
+                duration: 200.0,
+                animate: (phase) => {
+                    var start = [138.72649, 35.33974];
+                    var end = [138.72623, 35.31977];
+                    var alt = [6000.0, 6000.0];
+                    var target1 = [138.73036, 35.36197];
+                    var target2 = [138.74831, 35.34784];
 
-            // create easing functions for the animation
-            var easeInOutQuad = (t) =>
-                t < 0.5 ? 2.0 * t * t : (4.0 - 2.0 * t) * t - 1.0;
-            var easeInCubic = (t) => t * t * t;
+                    // interpolate camera position and target
+                    var camera = map.getFreeCameraOptions();
 
-            var animations = [
-                {
-                    duration: 500.0,
-                    animate: (phase) => {
-                        var start = [138.73375, 35.41914];
-                        var end = [138.72649, 35.33974];
-                        var alt = [7000.0, 6000.0];
-                        var target = [138.73036, 35.36197];
+                    var position = lerp(start, end, phase);
+                    var altitude = lerp(alt[0], alt[1], phase);
+                    var target = lerp(target1, target2, phase);
+                    camera.position = mapboxgl.MercatorCoordinate.fromLngLat(
+                        position,
+                        altitude
+                    );
+                    camera.lookAtPoint(target);
 
-                        // interpolate camera position while keeping focus on the target lat/lng
-                        var camera = map.getFreeCameraOptions();
-
-                        var position = lerp(start, end, phase);
-                        var altitude = lerp(alt[0], alt[1], phase);
-                        camera.position = mapboxgl.MercatorCoordinate.fromLngLat(
-                            position,
-                            altitude
-                        );
-                        camera.lookAtPoint(target);
-
-                        map.setFreeCameraOptions(camera);
-                    }
-                },
-                {
-                    duration: 200.0,
-                    animate: (phase) => {
-                        var start = [138.72649, 35.33974];
-                        var end = [138.72623, 35.31977];
-                        var alt = [6000.0, 6000.0];
-                        var target1 = [138.73036, 35.36197];
-                        var target2 = [138.74831, 35.34784];
-
-                        // interpolate camera position and target
-                        var camera = map.getFreeCameraOptions();
-
-                        var position = lerp(start, end, phase);
-                        var altitude = lerp(alt[0], alt[1], phase);
-                        var target = lerp(target1, target2, phase);
-                        camera.position = mapboxgl.MercatorCoordinate.fromLngLat(
-                            position,
-                            altitude
-                        );
-                        camera.lookAtPoint(target);
-
-                        map.setFreeCameraOptions(camera);
-                    }
-                },
-                {
-                    duration: 200.0,
-                    animate: (phase) => {
-                        var start = [138.72623, 35.31977];
-                        var end = [138.73375, 35.41914];
-                        var alt = [6000.0, 7000.0];
-                        var target1 = [138.74831, 35.34784];
-                        var target2 = [138.73036, 35.36197];
-
-                        var camera = map.getFreeCameraOptions();
-                        var position = lerp(start, end, easeInOutQuad(phase));
-                        var altitude = lerp(alt[0], alt[1], phase);
-
-                        var target = lerp(target1, target2, phase);
-                        camera.position = mapboxgl.MercatorCoordinate.fromLngLat(
-                            position,
-                            altitude
-                        );
-                        camera.lookAtPoint(target);
-
-                        map.setFreeCameraOptions(camera);
-                    }
+                    map.setFreeCameraOptions(camera);
                 }
-            ];
+            },
+            {
+                duration: 200.0,
+                animate: (phase) => {
+                    var start = [138.72623, 35.31977];
+                    var end = [138.73375, 35.41914];
+                    var alt = [6000.0, 7000.0];
+                    var target1 = [138.74831, 35.34784];
+                    var target2 = [138.73036, 35.36197];
 
-            setInterval(() => {
-                animationIndex %= animations.length;
-                var current = animations[animationIndex];
+                    var camera = map.getFreeCameraOptions();
+                    var position = lerp(start, end, easeInOutQuad(phase));
+                    var altitude = lerp(alt[0], alt[1], phase);
 
-                if (animationTime < current.duration) {
-                    current.animate(animationTime / current.duration);
+                    var target = lerp(target1, target2, phase);
+                    camera.position = mapboxgl.MercatorCoordinate.fromLngLat(
+                        position,
+                        altitude
+                    );
+                    camera.lookAtPoint(target);
+
+                    map.setFreeCameraOptions(camera);
                 }
+            }
+        ];
 
-                animationTime += 1.0 / 60;
+        setInterval(() => {
+            animationIndex %= animations.length;
+            var current = animations[animationIndex];
 
-                if (animationTime > current.duration) {
-                    animationIndex++;
-                    animationTime = 0.0;
-                }
-            }, 1000.0 / 60.0);
-        });
+            if (animationTime < current.duration) {
+                current.animate(animationTime / current.duration);
+            }
+
+            animationTime += 1.0 / 60;
+
+            if (animationTime > current.duration) {
+                animationIndex++;
+                animationTime = 0.0;
+            }
+        }, 1000.0 / 60.0);
     });
 
     document.getElementById('cycle-anim-button').onclick = function () {
