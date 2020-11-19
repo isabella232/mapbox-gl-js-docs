@@ -52,7 +52,7 @@
     // wait for the terrain and sky to load before starting animations
     map.on('idle', function () {
         // linearly interpolate between two altitudes/position based on time
-        var lerp = (a, b, t) => {
+        var lerp = function (a, b, t) {
             if (Array.isArray(a) && Array.isArray(b)) {
                 var result = [];
                 for (var i = 0; i < Math.min(a.length, b.length); i++)
@@ -64,13 +64,14 @@
         };
 
         // create easing function for the animation
-        var easeInOutQuad = (t) =>
-            t < 0.5 ? 2.0 * t * t : (4.0 - 2.0 * t) * t - 1.0;
+        var easeInOutQuad = function (t) {
+            return t < 0.5 ? 2.0 * t * t : (4.0 - 2.0 * t) * t - 1.0;
+        };
 
         var animations = [
             {
                 duration: 500.0,
-                animate: (phase) => {
+                animate: function (phase) {
                     var start = [138.73375, 35.41914];
                     var end = [138.72649, 35.33974];
                     var alt = [7000.0, 6000.0];
@@ -92,7 +93,7 @@
             },
             {
                 duration: 200.0,
-                animate: (phase) => {
+                animate: function (phase) {
                     var start = [138.72649, 35.33974];
                     var end = [138.72623, 35.31977];
                     var alt = [6000.0, 6000.0];
@@ -116,7 +117,7 @@
             },
             {
                 duration: 200.0,
-                animate: (phase) => {
+                animate: function (phase) {
                     var start = [138.72623, 35.31977];
                     var end = [138.73375, 35.41914];
                     var alt = [6000.0, 7000.0];
@@ -139,7 +140,7 @@
             }
         ];
 
-        setInterval(() => {
+        setInterval(function () {
             animationIndex %= animations.length;
             var current = animations[animationIndex];
 

@@ -272,7 +272,7 @@
     // wait for the terrain and sky to load before starting animation
     map.on('idle', function () {
         // linearly interpolate between two altitudes/position based on time
-        var lerp = (a, b, t) => {
+        var lerp = function (a, b, t) {
             if (Array.isArray(a) && Array.isArray(b)) {
                 var result = [];
                 for (var i = 0; i < Math.min(a.length, b.length); i++)
@@ -325,7 +325,7 @@
         var currentCameraPosition = null;
         var camera = map.getFreeCameraOptions();
 
-        setInterval(() => {
+        setInterval(function () {
             // get start and end positions for the route and camera for this section of the animation
             var routePosition = {
                 start: currentRoutePosition || route[routeIndex],

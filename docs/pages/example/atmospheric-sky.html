@@ -25,6 +25,7 @@
     src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"
 ></script>
 <script>
+    /*global SunCalc*/
     // set up a style with terrain enabled
     var style = {
         'version': 8,
@@ -83,22 +84,22 @@
         center: [-122.423, 37.827],
         pitch: 80,
         bearing: 250,
-        style,
+        style: style,
         hash: true
     });
 
-    let date = new Date(Date.now());
+    var date = new Date(Date.now());
 
-    const sunTimeLabels = [
+    var sunTimeLabels = [
         'sunriseEnd',
         'goldenHourEnd',
         'solarNoon',
         'goldenHour',
         'sunsetStart'
     ];
-    sunTimeLabels.forEach((btnId) => {
-        document.getElementById(btnId).addEventListener('click', () => {
-            const sunTimes = SunCalc.getTimes(
+    sunTimeLabels.forEach(function (btnId) {
+        document.getElementById(btnId).addEventListener('click', function () {
+            var sunTimes = SunCalc.getTimes(
                 Date.now(),
                 map.getCenter().lat,
                 map.getCenter().lng
@@ -113,23 +114,47 @@
         });
     });
 
-    document.getElementById('next30mins').addEventListener('click', () => {
-        date.setTime(date.getTime() + 30 * 60 * 1000);
-        map.setPaintProperty('sky', 'sky-atmosphere-sun', getSunPosition(date));
-    });
-    document.getElementById('prev30mins').addEventListener('click', () => {
-        date.setTime(date.getTime() - 30 * 60 * 1000);
-        map.setPaintProperty('sky', 'sky-atmosphere-sun', getSunPosition(date));
-    });
-    document.getElementById('next30days').addEventListener('click', () => {
-        date.setMonth(date.getMonth() + 1);
-        map.setPaintProperty('sky', 'sky-atmosphere-sun', getSunPosition(date));
-    });
-    document.getElementById('prev30days').addEventListener('click', () => {
-        date.setMonth(date.getMonth() - 1);
-        map.setPaintProperty('sky', 'sky-atmosphere-sun', getSunPosition(date));
-    });
-    document.getElementById('getlocal').addEventListener('click', () => {
+    document
+        .getElementById('next30mins')
+        .addEventListener('click', function () {
+            date.setTime(date.getTime() + 30 * 60 * 1000);
+            map.setPaintProperty(
+                'sky',
+                'sky-atmosphere-sun',
+                getSunPosition(date)
+            );
+        });
+    document
+        .getElementById('prev30mins')
+        .addEventListener('click', function () {
+            date.setTime(date.getTime() - 30 * 60 * 1000);
+            map.setPaintProperty(
+                'sky',
+                'sky-atmosphere-sun',
+                getSunPosition(date)
+            );
+        });
+    document
+        .getElementById('next30days')
+        .addEventListener('click', function () {
+            date.setMonth(date.getMonth() + 1);
+            map.setPaintProperty(
+                'sky',
+                'sky-atmosphere-sun',
+                getSunPosition(date)
+            );
+        });
+    document
+        .getElementById('prev30days')
+        .addEventListener('click', function () {
+            date.setMonth(date.getMonth() - 1);
+            map.setPaintProperty(
+                'sky',
+                'sky-atmosphere-sun',
+                getSunPosition(date)
+            );
+        });
+    document.getElementById('getlocal').addEventListener('click', function () {
         date = new Date(Date.now());
         map.setPaintProperty('sky', 'sky-atmosphere-sun', getSunPosition());
     });
@@ -162,7 +187,7 @@
     });
 
     function getSunPosition(date) {
-        const center = map.getCenter();
+        var center = map.getCenter();
         var sunPos = SunCalc.getPosition(
             date || Date.now(),
             center.lat,
